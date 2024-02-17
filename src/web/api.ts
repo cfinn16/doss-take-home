@@ -26,6 +26,18 @@ class DosspaceApi {
       throw new Error('Unable to fetch workspace')
     }
   }
+
+  static async createTable(workspaceId: string): Promise<DetailWorkspace>  {
+    try {
+      const req = await axios.post(`${BASE_URL}/${workspaceId}/tables`, {
+        workspaceId
+      })
+      const {workspace} = req.data
+      return workspace
+    } catch (err) {
+      throw new Error('unable to create table')
+    }
+  }
 }
 
 export default DosspaceApi

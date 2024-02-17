@@ -1,5 +1,5 @@
 import { all, findOne, insert, update } from './db/db'
-import { Workspace } from './types'
+import { ShipmentTable, Workspace } from './types'
 import { v4 as uuidv4 } from 'uuid'
 
 /** Returns a list of all workspaces in the database */
@@ -31,7 +31,20 @@ export function createWorkspace(dbString: string): Workspace {
 }
 
 /** Update a workspace in the database */
-export function updateWorkspace(dbString: string, workspace: Workspace): Workspace {
-  update(dbString, 'workspaces', workspace.id, workspace)
-  return findOne(dbString, 'workspaces', workspace.id)
+export function updateWorkspace(dbString: string, workspace: Workspace) {
+  // update(dbString, 'workspaces', workspace.id, workspace)
+  // return findOne(dbString, 'workspaces', workspace.id)
 }
+
+export function addTableToWorkspace(dbString: string, workspaceId: string): Workspace{
+  const table: ShipmentTable = {
+    id: uuidv4(),
+    buildNumber: '',
+        // Initialize the workspace with a single empty build shipment
+        shipments: [{ id: uuidv4(), description: '', orderNumber: '', cost: 0 }],
+    }
+  const workspace = findOne(dbString, 'workspaces', workspaceId)
+  const newWorkspace = {...workspace, buildShipments: [...workspace.buildShipments, table]}
+  update(dbString, 'workspaces', workspaceId, newWorkspace)
+  return findOne(dbString, 'workspaces', workspaceId)
+  }

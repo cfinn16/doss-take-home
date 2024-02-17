@@ -1,6 +1,6 @@
 import fs from 'fs'
 import { v4 as uuidv4 } from 'uuid'
-import { Workspace } from '../types'
+import { ShipmentTable, Workspace } from '../types'
 import path from 'path'
 
 export function getFilePath(dbFile: string): string {
@@ -8,11 +8,13 @@ export function getFilePath(dbFile: string): string {
 }
 
 /** Insert a new object into the database */
-export function insert(dbFile: string, key: string, obj: Workspace) {
+export function insert(dbFile: string, key: string, obj: Workspace | ShipmentTable) {
+  console.log(key)
   const data = fs.readFileSync(getFilePath(dbFile), 'utf8')
   const json = JSON.parse(data)
   json[key] ||= []
   json[key].push(obj)
+
   fs.writeFileSync(getFilePath(dbFile), JSON.stringify(json))
 }
 
@@ -37,7 +39,7 @@ export function deleteObj(dbFile: string, key: 'workspaces', id: string) {
     throw new Error('Could not find object with id "' + id + '"')
   }
   json[key].splice(removingIndex, 1)
-  fs.writeFileSync(getFilePath(dbFile), JSON.stringify(json))
+  fs.writeFileSync(getFilePath(dbFile), JSON.stringify(json), 'utf8')
 }
 
 /** Return a single object from the database */

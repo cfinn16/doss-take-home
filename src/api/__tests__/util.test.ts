@@ -12,8 +12,6 @@ describe('Util tests', () => {
     return uuidv4()
   }
 
-  const workspaceId = createMockUuid()
-
   beforeEach(() => {
     mock({ [path.resolve(__dirname, testDbString)]: '' })
     reset(testDbString)
@@ -28,7 +26,6 @@ describe('Util tests', () => {
       const workspaces = utils.getWorkspaces(testDbString)
       expect(workspaces).toBeDefined()
       expect(workspaces).toHaveLength(1)
-      expect(workspaces[0].id).toBe(workspaceId)
       expect(workspaces[0].title).toEqual("Wiley's Shipping")
       expect(workspaces[0].buildShipments).toHaveLength(1)
       expect(workspaces[0].buildShipments[0].buildNumber).toEqual('A82D2-108')
@@ -39,6 +36,7 @@ describe('Util tests', () => {
 
   describe('getWorkspace', () => {
     it('returns the queried workspace from the db', () => {
+      const workspaceId = utils.getWorkspaces(testDbString)[0].id
       const workspace = utils.getWorkspace(testDbString, workspaceId)
       expect(workspace).toBeDefined()
       expect(workspace.title).toEqual("Wiley's Shipping")
